@@ -1,41 +1,32 @@
 {
-  "name": "debuggler",
-  "description": "Resolves debug namespace like magic.",
+  "name": "mysqle",
+  "description": "Mysql events.",
   "version": "1.0.0",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rodrigogs/debuggler"
+    "url": "https://github.com/rodrigogs/mysqle"
   },
-  "keywords": [
-    "debug",
-    "log",
-    "debugger",
-    "automatic",
-    "wrapper"
-  ],
+  "keywords": [],
   "scripts": {
+    "start": "dotenv node index.js",
     "eslint": "eslint . --ext .js",
-    "test": "mocha",
-    "coverage": "nyc --reporter=html --reporter=lcov npm test"
+    "test": "mocha"
   },
   "dependencies": {
-    "caller-path": "^2.0.0",
-    "pkg-up": "^2.0.0"
-  },
-  "peerDependencies": {
-    "debug": "3.x"
+    "debuggler": "^1.0.0",
+    "mysql-events": "^0.0.11"
   },
   "devDependencies": {
     "chai": "^4.1.2",
     "codeclimate-test-reporter": "^0.5.0",
+    "dotenv-cli": "^1.4.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
     "mocha": "^5.1.0",
-    "nyc": "^11.6.0",
-    "test-console": "^1.1.0"
+    "nyc": "^11.6.0"
   },
   "engines": {
     "node": ">=7.6.0"
