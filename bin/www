@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+
+const Env = require('../src/env');
+const debug = require('debuggler')();
+const app = require('../src/web');
+
+debug('starting HTTP instance');
+
+const start = () => new Promise(async (resolve, reject) => {
+  try {
+    const instance = await app();
+
+    instance.listen(Env.PORT, (err) => {
+      if (err) return reject(err);
+      resolve(instance);
+    }).on('error', reject);
+  } catch (err) {
+    reject(err);
+  }
+});
+
+start()
+  .then(() => console.log('Application running on port', Env.PORT))
+  .catch((err) => {
+    console.log('Application crashed:', err);
+    process.exit(1);
+  });

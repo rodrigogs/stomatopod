@@ -6,7 +6,7 @@ before(() => {
   chai.should();
 });
 
-describe('mysqle', () => {
+describe('stomatopod', () => {
 
   it('should do something', () => {
   });

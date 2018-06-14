@@ -1,12 +1,12 @@
 {
-  "name": "mysqle",
-  "description": "Mysql events.",
-  "version": "1.0.0",
+  "name": "stomatopod",
+  "description": "Spear events from mysql binlog.",
+  "version": "1.0.0-ALPHA",
   "main": "index.js",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rodrigogs/mysqle"
+    "url": "https://github.com/rodrigogs/stomatopod"
   },
   "keywords": [],
   "scripts": {
@@ -15,7 +15,15 @@
     "test": "mocha"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "debuggler": "^1.0.0",
+    "dotenv": "^6.0.0",
+    "koa": "^2.5.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "lowdb": "^1.0.0",
+    "mkdirp": "^0.5.1",
+    "mysql": "^2.15.0",
     "mysql-events": "^0.0.11"
   },
   "devDependencies": {
