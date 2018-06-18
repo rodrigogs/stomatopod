@@ -20,7 +20,7 @@ const unwatch = async (expression, destination) => {
   if (!destination) {
     await db.get('watchers').remove({ expression }).write();
     Shrimp.remove(expression);
-    Cache.set(expression, undefined);
+    await Cache.remove(expression);
     return;
   }
 
@@ -54,13 +54,13 @@ const unwatch = async (expression, destination) => {
       return;
     }
 
-    Cache.set(expression, watcher);
+    await Cache.set(expression, watcher);
     return watcher;
   }
 
   await db.get('watchers').remove({ expression }).write();
+  await Cache.remove(expression);
   Shrimp.remove(expression);
-  Cache.set(expression, undefined);
 };
 
 module.exports = unwatch;

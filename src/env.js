@@ -18,6 +18,10 @@ class Env {
     return process.env.NODE_ENV || 'development';
   }
 
+  static get HOST() {
+    return process.env.HOST || 'http://localhost';
+  }
+
   /**
    * @default 3000
    * @return {Number}

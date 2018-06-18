@@ -3,6 +3,9 @@ const low = require('./db');
 const Shrimp = require('./shrimp');
 const Cache = require('./cache');
 const axios = require('axios');
+const socket = require('./socket');
+
+const WATCHING_EXPRESSIONS = [];
 
 const watch = async (expression, destination) => {
   if (!expression || !destination) {
@@ -25,39 +28,51 @@ const watch = async (expression, destination) => {
     const hasDest = watcher.destinations.indexOf(destination) !== -1;
     if (hasDest) {
       debug('watcher already has destination', destination);
-      return watcher;
+      await Cache.set(expression, watcher);
+    } else {
+      debug('adding destination', destination, 'for watcher');
+      watcher = await db.get('watchers')
+        .find({ expression })
+        .update('destinations', dests => dests.push(destination))
+        .write();
     }
-
-    debug('adding destination', destination, 'for watcher');
-    watcher = await db.get('watchers')
+  } else {
+    debug('creating watcher');
+    watcher = await db
+      .get('watchers')
+      .push({ expression, destinations: [destination] })
       .find({ expression })
-      .update('destinations', dests => dests.push(destination))
       .write();
 
-    return watcher;
+    await Cache.set(expression, watcher);
   }
 
-  debug('creating watcher');
-  watcher = await db
-    .get('watchers')
-    .push({ expression, destinations: [destination] })
-    .find({ expression })
-    .write();
-
-  Cache.set(expression, JSON.stringify(watcher));
+  if (WATCHING_EXPRESSIONS.indexOf(expression) !== -1) return watcher;
 
   Shrimp.add(expression, async (oldRow, newRow, event) => {
-    const watcher = JSON.parse(Cache.get(expression));
+    debug('caught event for expression', expression);
+
+    const watcher = await Cache.get(expression);
     if (!watcher) return debug('found orphan watcher for expression', expression);
 
     await Promise.all(watcher.destinations.map(async (dest) => {
+      socket.broadcast('request', { destination: dest, expression });
+
       axios.post(dest, {
         oldRow,
         newRow,
         event,
-      });
+      })
+        .then(() => {
+          debug('succeeded', expression, destination);
+        })
+        .catch(() => {
+          debug('failed', expression, destination);
+        });
     }));
   });
+
+  WATCHING_EXPRESSIONS.push(expression);
 
   return watcher;
 };

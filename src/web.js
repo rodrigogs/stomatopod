@@ -1,59 +1,41 @@
 const debug = require('debuggler')();
 
+const path = require('path');
 const Koa = require('koa');
 const Router = require('koa-router');
+const cors = require('@koa/cors');
+const serve = require('koa-static');
+const mount = require('koa-mount');
 const bodyParser = require('koa-bodyparser');
-const watch = require('./watch');
-const unwatch = require('./unwatch');
 const init = require('./init');
+const apiRouter = require('./api');
 
-const Application = async () => {
+/**
+ * @return {Promise<Koa>}
+ */
+const bootstrap = async () => {
   debug('bootstrapping application');
 
   await init();
 
   const app = new Koa();
   const router = new Router();
+  const socket = require('./socket');
 
+  app.use(mount('/', serve(path.join(__dirname, 'front'))));
+
+  app.use(cors());
   app.use(bodyParser({
     jsonLimit: '10mb',
   }));
 
-  router.post('/watch', async (ctx) => {
-    const {
-      expression,
-      destination,
-    } = ctx.request.body;
-
-    const watcher = await watch(expression, destination);
-    if (!watcher) {
-      ctx.status = 204;
-      return;
-    }
-
-    ctx.status = 200;
-    ctx.body = watcher;
-  });
-
-  router.post('/unwatch', async (ctx) => {
-    const {
-      expression,
-      destination,
-    } = ctx.request.body;
-
-    const watcher = await unwatch(expression, destination);
-    if (!watcher) {
-      ctx.status = 204;
-      return;
-    }
-
-    ctx.status = 200;
-    ctx.body = watcher;
-  });
+  router.use('/api', apiRouter.routes(), apiRouter.allowedMethods());
 
   app.use(router.routes(), router.allowedMethods());
+
+  socket.attach(app);
 
   return app;
 };
 
-module.exports = Application;
+module.exports = bootstrap;

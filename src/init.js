@@ -1,9 +1,12 @@
 const debug = require('debuggler')();
 const low = require('./db');
 const watch = require('./watch');
+const Cache = require('./cache');
 
 const init = async () => {
   const db = await low;
+  await Cache.init();
+
   await db
     .defaults({
       watchers: [],
@@ -22,7 +25,7 @@ const init = async () => {
     return Promise.all(watcher.destinations.map(async (destination) => {
       debug('initializing watcher for expression', watcher.expression, 'destination', destination);
 
-      // await watch(watcher.expression, destination);
+      await watch(watcher.expression, destination);
     }));
   }));
 };
