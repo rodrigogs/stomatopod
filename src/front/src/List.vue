@@ -4,7 +4,7 @@
     table.table.table-hover
       thead.thead-dark: tr
         th(scope='col') Expression
-        th(scope='col') Destinations
+        th(scope='col') Destination
         th(scope='col') Requests
         th
       tbody
