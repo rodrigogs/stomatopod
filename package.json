@@ -10,7 +10,8 @@
   },
   "keywords": [],
   "scripts": {
-    "start": "dotenv node index.js",
+    "start": "dotenv node bin/www",
+    "build": "npm install && cd src/front && npm install && npm run build",
     "eslint": "eslint . --ext .js",
     "test": "mocha"
   },
