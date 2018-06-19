@@ -20,6 +20,7 @@
     "axios": "^0.18.0",
     "debuggler": "^1.0.0",
     "dotenv": "^6.0.0",
+    "flatted": "^0.2.2",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
     "koa-mount": "^3.0.0",

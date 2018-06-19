@@ -7,12 +7,14 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import BootstrapVue from 'bootstrap-vue';
 import VueSocketio from 'vue-socket.io';
+import TreeView from 'vue-json-tree-view';
 
 import App from './App.vue';
 import config from './config';
 
 Vue.use(VueResource);
 Vue.use(BootstrapVue);
+Vue.use(TreeView);
 Vue.use(VueSocketio, `${process.env.HOST}:${process.env.PORT}`);
 
 config(Vue);

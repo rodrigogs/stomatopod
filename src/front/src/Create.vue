@@ -8,13 +8,24 @@
         label.sr-only(for='destination') Destination
         input.form-control(type='text' id='destination' placeholder='Destination' v-model='watcher.destination')
       .col-auto
-        button.btn.btn-primary(type='submit') Watch
+        button.btn.btn-primary(type='submit')
+          | Watch&nbsp;
+          font-awesome-icon(icon='eye')
+
 </template>
 
 <script>
+import '@fortawesome/fontawesome-free-solid';
+
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
+
 export default {
   name: 'create',
   props: ['update'],
+
+  components: {
+    FontAwesomeIcon,
+  },
 
   data () {
     return {

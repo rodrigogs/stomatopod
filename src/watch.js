@@ -4,6 +4,7 @@ const Shrimp = require('./shrimp');
 const Cache = require('./cache');
 const axios = require('axios');
 const socket = require('./socket');
+const { parse, stringify } = require('flatted/cjs');
 
 const WATCHING_EXPRESSIONS = [];
 
@@ -56,18 +57,24 @@ const watch = async (expression, destination) => {
     if (!watcher) return debug('found orphan watcher for expression', expression);
 
     await Promise.all(watcher.destinations.map(async (dest) => {
-      socket.broadcast('request', { destination: dest, expression });
+      socket.broadcast('request', {
+        destination: dest,
+        expression,
+        newRow,
+        oldRow,
+      });
 
       axios.post(dest, {
         oldRow,
         newRow,
-        event,
+        event: stringify(event),
       })
         .then(() => {
           debug('succeeded', expression, destination);
         })
-        .catch(() => {
+        .catch((err) => {
           debug('failed', expression, destination);
+          console.error(err);
         });
     }));
   });
